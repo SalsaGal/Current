@@ -1,3 +1,5 @@
+use crate::math::{Rect, Vector2};
+
 use sdl2::image::LoadTexture;
 use sdl2::render::{Texture, WindowCanvas};
 
@@ -16,13 +18,16 @@ impl GraphicsHandler {
 		}
 	}
 
-	pub fn render(&mut self, image: Image) {
+	pub fn render(&mut self, image: Image, pos: Vector2<i32>) {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(&path) {
 			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
 		}
 
-		self.canvas.copy(self.sprite_cache.get(&path).unwrap(), None, None).unwrap();
+		let texture = self.sprite_cache.get(&path).unwrap();
+		let bounds = Rect::new(pos.x, pos.y, texture.query().width, texture.query().height);
+
+		self.canvas.copy(self.sprite_cache.get(&path).unwrap(), None, bounds).unwrap();
 	}
 }
 
