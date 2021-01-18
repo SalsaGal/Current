@@ -1,0 +1,9 @@
+$opt default_positionals
+
+#- b
+	cargo build
+#/
+
+#- r
+	cargo run --example $1
+#/
