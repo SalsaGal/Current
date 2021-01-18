@@ -1,6 +1,8 @@
+pub mod input;
 pub mod math;
 pub mod layer;
 
+use input::InputHandler;
 use math::Vector2;
 use layer::GameLayer;
 
@@ -23,6 +25,7 @@ pub struct Engine {
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
 
+	pub input_handler: InputHandler,
 	pub running: bool,
 }
 
@@ -41,6 +44,7 @@ impl Engine {
 				vec![ layer ]
 			},
 
+			input_handler: InputHandler::new(),
 			running: true
 		}
 	}
@@ -51,6 +55,11 @@ impl Engine {
 		for event in self.event_pump.poll_iter() {
 			match event {
 				Event::Quit { .. } => quitting = true,
+				Event::KeyDown { .. } |
+				Event::KeyUp { .. } |
+				Event::MouseButtonDown { .. } |
+				Event::MouseButtonUp { .. } |
+				Event::MouseMotion { .. } => self.input_handler.event(event),
 				_ => {},
 			}
 		}
