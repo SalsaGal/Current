@@ -47,11 +47,16 @@ impl Engine {
 
 	pub fn update(&mut self) {
 		// Update input
+		let mut quitting = false;
 		for event in self.event_pump.poll_iter() {
 			match event {
-				Event::Quit { .. } => self.running = false,
+				Event::Quit { .. } => quitting = true,
 				_ => {},
 			}
+		}
+		if quitting {
+			self.quit();
+			return;
 		}
 
 		// Update layers
@@ -64,6 +69,13 @@ impl Engine {
 			}
 			layer.update();
 		}
+	}
+
+	pub fn quit(&mut self) {
+		for _ in 0 .. self.layer_stack.len() {
+			self.pop_layer();
+		}
+		self.running = false;
 	}
 
 	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {
