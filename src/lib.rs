@@ -1,27 +1,22 @@
+pub mod graphics;
 pub mod input;
 pub mod math;
 pub mod layer;
 
+use graphics::GraphicsHandler;
 use input::InputHandler;
 use math::Vector2;
 use layer::{GameLayer, Transition};
 
 use sdl2::{
-	event::{
-		Event,
-	},
+	event::Event,
 	EventPump,
-	render::{
-		WindowCanvas,
-	},
-	video::{
-		WindowBuilder,
-	},
+	video::WindowBuilder,
 };
 
 pub struct Engine {
-	canvas: WindowCanvas,
 	event_pump: EventPump,
+	graphics: GraphicsHandler,
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
 
@@ -36,8 +31,8 @@ impl Engine {
 		let sdl2_window = WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).build().unwrap();
 
 		Self {
-			canvas: sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap(),
 			event_pump: sdl2_context.event_pump().unwrap(),
+			graphics: GraphicsHandler::new(sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap()),
 
 			layer_stack: {
 				layer.on_push();
@@ -50,6 +45,9 @@ impl Engine {
 	}
 
 	pub fn update(&mut self) {
+		// Rnedering preparations
+		self.graphics.canvas.clear();
+
 		// Update input
 		self.input_handler.update();
 		let mut quitting = false;
@@ -73,7 +71,7 @@ impl Engine {
 		let layer_max = self.layer_stack.len() - 1;
 		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			transition = layer.update(&self.input_handler, index == layer_max);
+			transition = layer.update(&mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
 			Transition::Pop => { self.pop_layer(); },
@@ -81,6 +79,9 @@ impl Engine {
 			Transition::Quit => self.quit(),
 			_ => {}
 		}
+
+		// Render
+		self.graphics.canvas.present();
 	}
 
 	pub fn quit(&mut self) {
