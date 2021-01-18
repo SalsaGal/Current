@@ -65,4 +65,14 @@ impl Engine {
 			layer.update();
 		}
 	}
+
+	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {
+		self.layer_stack.last_mut().unwrap().on_pop();
+		self.layer_stack.pop().unwrap()
+	}
+
+	pub fn push_layer(&mut self, mut layer: Box<dyn GameLayer>) {
+		layer.on_push();
+		self.layer_stack.push(layer);
+	}
 }
