@@ -1,4 +1,6 @@
-mod math;
+pub mod math;
+
+use math::Vector2;
 
 use sdl2::{
 	EventPump,
@@ -16,10 +18,10 @@ pub struct Engine {
 }
 
 impl Engine {
-	pub fn new() -> Self {
+	pub fn new(window_title: &str, window_bounds: Vector2<u32>) -> Self {
 		let sdl2_context = sdl2::init().unwrap();
 		let sdl2_video = sdl2_context.video().unwrap();
-		let sdl2_window = WindowBuilder::new(&sdl2_video, "Current", 640, 480).build().unwrap();
+		let sdl2_window = WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).build().unwrap();
 
 		Self {
 			canvas: sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap(),
@@ -28,6 +30,5 @@ impl Engine {
 	}
 
 	pub fn update(&mut self) {
-		
 	}
 }
