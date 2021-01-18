@@ -18,15 +18,22 @@ impl GraphicsHandler {
 		}
 	}
 
+	pub fn get_bounds(&mut self, image: Image, pos: Vector2<i32>) -> Rect {
+		let path = image.render();
+		if !self.sprite_cache.contains_key(&path) {
+			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
+		}
+		let texture = self.sprite_cache.get(&path).unwrap();
+		Rect::new(pos.x, pos.y, texture.query().width, texture.query().height)
+	}
+
 	pub fn render(&mut self, image: Image, pos: Vector2<i32>) {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(&path) {
 			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
 		}
 
-		let texture = self.sprite_cache.get(&path).unwrap();
-		let bounds = Rect::new(pos.x, pos.y, texture.query().width, texture.query().height);
-
+		let bounds = self.get_bounds(image, pos);
 		self.canvas.copy(self.sprite_cache.get(&path).unwrap(), None, bounds).unwrap();
 	}
 }
