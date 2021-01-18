@@ -6,10 +6,12 @@ pub trait GameLayer {
 	// When the layer is taken off the stack
 	fn on_pop(&mut self) {}
 	
-	// When the layer is at the top of the stack
-	fn update_focused(&mut self, _input: &InputHandler) {}
-	// When the layer is not at the top of the stack
-	fn update_unfocused(&mut self, _input: &InputHandler) {}
-	// When the layer is anywhere
-	fn update(&mut self, _input: &InputHandler) {}
+	fn update(&mut self, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
+}
+
+pub enum Transition {
+	None,
+	Pop,
+	Push(Box<dyn GameLayer>),
+	Quit,
 }

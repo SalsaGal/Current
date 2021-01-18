@@ -4,7 +4,7 @@ pub mod layer;
 
 use input::InputHandler;
 use math::Vector2;
-use layer::GameLayer;
+use layer::{GameLayer, Transition};
 
 use sdl2::{
 	event::{
@@ -71,13 +71,15 @@ impl Engine {
 
 		// Update layers
 		let layer_max = self.layer_stack.len() - 1;
+		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			if index == layer_max {
-				layer.update_focused(&self.input_handler);
-			} else {
-				layer.update_unfocused(&self.input_handler);
-			}
-			layer.update(&self.input_handler);
+			transition = layer.update(&self.input_handler, index == layer_max);
+		}
+		match transition {
+			Transition::Pop => { self.pop_layer(); },
+			Transition::Push(layer) => self.push_layer(layer),
+			Transition::Quit => self.quit(),
+			_ => {}
 		}
 	}
 
