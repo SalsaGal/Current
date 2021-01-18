@@ -51,6 +51,7 @@ impl Engine {
 
 	pub fn update(&mut self) {
 		// Update input
+		self.input_handler.update();
 		let mut quitting = false;
 		for event in self.event_pump.poll_iter() {
 			match event {
@@ -72,11 +73,11 @@ impl Engine {
 		let layer_max = self.layer_stack.len() - 1;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
 			if index == layer_max {
-				layer.update_focused();
+				layer.update_focused(&self.input_handler);
 			} else {
-				layer.update_unfocused();
+				layer.update_unfocused(&self.input_handler);
 			}
-			layer.update();
+			layer.update(&self.input_handler);
 		}
 	}
 
