@@ -18,7 +18,7 @@ impl GraphicsHandler {
 		}
 	}
 
-	pub fn get_bounds(&mut self, image: Image, pos: Vector2<i32>) -> Rect {
+	pub fn get_bounds(&mut self, image: &Image, pos: Vector2<i32>) -> Rect {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(&path) {
 			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
@@ -27,7 +27,7 @@ impl GraphicsHandler {
 		Rect::new(pos.x, pos.y, texture.query().width, texture.query().height)
 	}
 
-	pub fn render(&mut self, image: Image, pos: Vector2<i32>) {
+	pub fn render(&mut self, image: &Image, pos: Vector2<i32>) {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(&path) {
 			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());

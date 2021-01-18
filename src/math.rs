@@ -1,5 +1,6 @@
 pub use sdl2::rect::Rect;
 
+#[derive(Clone, Copy)]
 pub struct Vector2<T> {
 	pub x: T,
 	pub y: T,
