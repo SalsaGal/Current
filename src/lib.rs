@@ -1,7 +1,6 @@
 pub mod graphics;
 pub mod input;
 pub mod math;
-pub mod menu;
 pub mod layer;
 
 use graphics::GraphicsHandler;
@@ -15,12 +14,18 @@ use sdl2::{
 	video::WindowBuilder,
 };
 
+use std::any::Any;
+use std::collections::HashMap;
+
+pub type GlobalData = HashMap<String, Box<dyn Any>>;
+
 pub struct Engine {
 	event_pump: EventPump,
 	graphics: GraphicsHandler,
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
 
+	pub global_data: GlobalData,
 	pub input_handler: InputHandler,
 	pub running: bool,
 }
@@ -40,6 +45,7 @@ impl Engine {
 				vec![ layer ]
 			},
 
+			global_data: HashMap::new(),
 			input_handler: InputHandler::new(),
 			running: true
 		}
@@ -72,7 +78,7 @@ impl Engine {
 		let layer_max = self.layer_stack.len() - 1;
 		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			transition = layer.update(&mut self.graphics, &self.input_handler, index == layer_max);
+			transition = layer.update(&mut self.global_data, &mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
 			Transition::Pop => { self.pop_layer(); },
