@@ -1,4 +1,4 @@
-use crate::math::Vector2;
+use crate::math::{point_collides, Rect, Vector2};
 
 use sdl2::event::Event;
 
@@ -74,6 +74,10 @@ impl InputHandler {
 			InputState::Pressed => *self.buttons_pressed.get(&button).unwrap_or(&false),
 			InputState::Up => !self.buttons_down.get(&button).unwrap_or(&false),
 		}
+	}
+
+	pub fn clicked_in_bounds(&self, bounds: Rect) -> bool {
+		self.button_is(MouseButton::Left, InputState::Pressed) && point_collides(self.mouse_pos, bounds)
 	}
 }
 
