@@ -28,3 +28,10 @@ impl<T> Vector2<T> {
 		}
 	}
 }
+
+pub fn point_collides(pos: Vector2<i32>, rect: Rect) -> bool {
+	pos.x > rect.x &&
+	pos.x < rect.x + rect.w &&
+	pos.y > rect.y &&
+	pos.y < rect.y + rect.h
+}
