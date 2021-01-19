@@ -4,13 +4,13 @@ use crate::input::InputHandler;
 
 pub trait GameLayer {
 	// When the layer is added to the stack
-	fn on_push(&mut self) {}
+	fn on_push(&mut self, _data: &mut GlobalData) {}
 	// When the layer is taken off the stack
-	fn on_pop(&mut self) {}
+	fn on_pop(&mut self, _data: &mut GlobalData) {}
 	// When a layer is put on top of it
-	fn on_lose_focus(&mut self) {}
+	fn on_lose_focus(&mut self, _data: &mut GlobalData) {}
 	// WHen a layer is taken off from on top of it
-	fn on_gain_focus(&mut self) {}
+	fn on_gain_focus(&mut self, _data: &mut GlobalData) {}
 	
 	fn update(&mut self, _data: &mut GlobalData, _graphics: &mut GraphicsHandler, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
 }

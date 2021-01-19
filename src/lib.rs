@@ -41,11 +41,11 @@ impl Engine {
 			graphics: GraphicsHandler::new(sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap()),
 
 			layer_stack: {
-				layer.on_push();
+				layer.on_push(&mut GlobalData::new());
 				vec![ layer ]
 			},
 
-			global_data: HashMap::new(),
+			global_data: GlobalData::new(),
 			input_handler: InputHandler::new(),
 			running: true
 		}
@@ -99,15 +99,15 @@ impl Engine {
 	}
 
 	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {
-		self.layer_stack.last_mut().unwrap().on_pop();
+		self.layer_stack.last_mut().unwrap().on_pop(&mut self.global_data);
 		let stack_size = self.layer_stack.len();
-		self.layer_stack.get_mut(stack_size - 2).unwrap().on_gain_focus();
+		self.layer_stack.get_mut(stack_size - 2).unwrap().on_gain_focus(&mut self.global_data);
 		self.layer_stack.pop().unwrap()
 	}
 
 	pub fn push_layer(&mut self, mut layer: Box<dyn GameLayer>) {
-		layer.on_push();
-		self.layer_stack.last_mut().unwrap().on_lose_focus();
+		layer.on_push(&mut self.global_data);
+		self.layer_stack.last_mut().unwrap().on_lose_focus(&mut self.global_data);
 		self.layer_stack.push(layer);
 	}
 }
