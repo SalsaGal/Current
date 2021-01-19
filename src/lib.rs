@@ -100,11 +100,14 @@ impl Engine {
 
 	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {
 		self.layer_stack.last_mut().unwrap().on_pop();
+		let stack_size = self.layer_stack.len();
+		self.layer_stack.get_mut(stack_size - 2).unwrap().on_gain_focus();
 		self.layer_stack.pop().unwrap()
 	}
 
 	pub fn push_layer(&mut self, mut layer: Box<dyn GameLayer>) {
 		layer.on_push();
+		self.layer_stack.last_mut().unwrap().on_lose_focus();
 		self.layer_stack.push(layer);
 	}
 }
