@@ -21,7 +21,7 @@ pub type GlobalData = HashMap<String, Box<dyn Any>>;
 
 pub struct Engine {
 	event_pump: EventPump,
-	graphics: GraphicsHandler,
+	pub graphics: GraphicsHandler,
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
 
@@ -92,7 +92,7 @@ impl Engine {
 	}
 
 	pub fn quit(&mut self) {
-		for _ in 0 .. self.layer_stack.len() {
+		for _ in 0 .. self.layer_stack.len() - 1 {
 			self.pop_layer();
 		}
 		self.running = false;
