@@ -17,20 +17,20 @@ use sdl2::{
 use std::any::Any;
 use std::collections::HashMap;
 
-pub type GlobalData = HashMap<String, Box<dyn Any>>;
+pub type GlobalData<'data> = HashMap<&'data str, Box<dyn Any>>;
 
-pub struct Engine {
+pub struct Engine<'engine> {
 	event_pump: EventPump,
 	pub graphics: GraphicsHandler,
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
 
-	pub global_data: GlobalData,
+	pub global_data: GlobalData<'engine>,
 	pub input_handler: InputHandler,
 	pub running: bool,
 }
 
-impl Engine {
+impl<'engine> Engine<'_> {
 	pub fn new(window_title: &str, window_bounds: Vector2<u32>, mut layer: Box<dyn GameLayer>) -> Self {
 		let sdl2_context = sdl2::init().unwrap();
 		let sdl2_video = sdl2_context.video().unwrap();
