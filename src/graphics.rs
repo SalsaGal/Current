@@ -29,6 +29,14 @@ impl GraphicsHandler {
 		Rect::new(pos.x, pos.y, texture.query().width, texture.query().height)
 	}
 
+	pub fn get_texture(&mut self, image: &Image, pos: Vector2<i32>) -> &mut Texture {
+		self.sprite_cache.get_mut(&image.render()).unwrap()
+	}
+
+	pub fn get_text_texture(&mut self, text: &Text, pos: Vector2<i32>) -> &mut Texture {
+		self.text_cache.get_mut(text).unwrap()
+	}
+
 	pub fn render(&mut self, image: &Image, pos: Vector2<i32>) {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(&path) {
