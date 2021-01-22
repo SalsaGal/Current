@@ -18,6 +18,8 @@ pub trait GameLayer {
 pub enum Transition {
 	None,
 	Pop,
+	PopMulti(usize),
 	Push(Box<dyn GameLayer>),
+	PushMulti(Vec<Box<dyn GameLayer>>),
 	Quit,
 }

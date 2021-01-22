@@ -82,10 +82,20 @@ impl<'engine> Engine<'_> {
 			transition = layer.update(&mut self.global_data, &mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
+			Transition::None => {}
 			Transition::Pop => { self.pop_layer(); },
+			Transition::PopMulti(depth) => {
+				for _ in 0 .. depth {
+					self.pop_layer();
+				}
+			}
 			Transition::Push(layer) => self.push_layer(layer),
+			Transition::PushMulti(to_add) => {
+				for layer in to_add.into_iter() {
+					self.push_layer(layer);
+				}
+			}
 			Transition::Quit => self.quit(),
-			_ => {}
 		}
 
 		// Render
