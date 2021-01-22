@@ -6,7 +6,7 @@ pub struct Vector2<T> {
 	pub y: T,
 }
 
-impl<T> Vector2<T> {
+impl<T> Vector2<T> where T: Clone + Copy {
 	pub fn new(x: T, y: T) -> Self {
 		Self {
 			x,
@@ -14,7 +14,7 @@ impl<T> Vector2<T> {
 		}
 	}
 
-	pub fn square(w: T) -> Self where T: Copy {
+	pub fn square(w: T) -> Self {
 		Self {
 			x: w,
 			y: w,
@@ -27,11 +27,11 @@ impl<T> Vector2<T> {
 			y: T::default(),
 		}
 	}
-}
 
-pub fn point_collides(pos: Vector2<i32>, rect: Rect) -> bool {
-	pos.x > rect.x &&
-	pos.x < rect.x + rect.w &&
-	pos.y > rect.y &&
-	pos.y < rect.y + rect.h
+	pub fn point_collides(&self, rect: Rect) -> bool where T: Into<i32> {
+		self.x.into() > rect.x &&
+		self.x.into() < rect.x + rect.w &&
+		self.y.into() > rect.y &&
+		self.y.into() < rect.y + rect.h
+	}
 }

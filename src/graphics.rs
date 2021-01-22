@@ -29,11 +29,11 @@ impl GraphicsHandler {
 		Rect::new(pos.x, pos.y, texture.query().width, texture.query().height)
 	}
 
-	pub fn get_texture(&mut self, image: &Image, pos: Vector2<i32>) -> &mut Texture {
+	pub fn get_texture(&mut self, image: &Image) -> &mut Texture {
 		self.sprite_cache.get_mut(&image.render()).unwrap()
 	}
 
-	pub fn get_text_texture(&mut self, text: &Text, pos: Vector2<i32>) -> &mut Texture {
+	pub fn get_text_texture(&mut self, text: &Text) -> &mut Texture {
 		self.text_cache.get_mut(text).unwrap()
 	}
 
