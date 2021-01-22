@@ -16,6 +16,7 @@ pub struct InputHandler {
 	buttons_down: HashMap<MouseButton, bool>,
 	buttons_pressed: HashMap<MouseButton, bool>,
 
+	pub click_pos: HashMap<MouseButton, Vector2<i32>>,
 	pub mouse_pos: Vector2<i32>,
 }
 
@@ -28,6 +29,7 @@ impl InputHandler {
 			buttons_down: HashMap::new(),
 			buttons_pressed: HashMap::new(),
 
+			click_pos: HashMap::new(),
 			mouse_pos: Vector2::origin(),
 		}
 	}
@@ -41,12 +43,16 @@ impl InputHandler {
 			Event::KeyUp { scancode, .. } => {
 				self.keys_down.insert(scancode.unwrap(), false);
 			},
-			Event::MouseButtonDown { mouse_btn, .. } => {
+			Event::MouseButtonDown { mouse_btn, x, y, .. } => {
 				self.buttons_down.insert(mouse_btn, true);
 				self.buttons_pressed.insert(mouse_btn, true);
+				if !self.click_pos.contains_key(&mouse_btn) {
+					self.click_pos.insert(mouse_btn, Vector2::new(x, y));
+				}
 			}
 			Event::MouseButtonUp { mouse_btn, .. } => {
 				self.buttons_down.insert(mouse_btn, false);
+				self.click_pos.remove(&mouse_btn);
 			}
 			Event::MouseMotion { x, y, .. } => {
 				self.mouse_pos = Vector2::new(x, y);
