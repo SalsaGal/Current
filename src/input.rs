@@ -82,8 +82,8 @@ impl InputHandler {
 		}
 	}
 
-	pub fn clicked_in_bounds(&self, bounds: Rect) -> bool {
-		self.button_is(MouseButton::Left, InputState::Pressed) && self.mouse_pos.point_collides(bounds)
+	pub fn clicked_in_bounds(&self, button: MouseButton, bounds: Rect) -> bool {
+		self.button_is(button, InputState::Pressed) && self.mouse_pos.point_collides(bounds)
 	}
 }
 
