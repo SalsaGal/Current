@@ -7,6 +7,7 @@ use sdl2::render::{Texture, WindowCanvas};
 use sdl2::ttf::Sdl2TtfContext;
 
 use std::collections::HashMap;
+use std::time::{Duration, Instant};
 
 pub struct GraphicsHandler {
 	pub canvas: WindowCanvas,
@@ -31,7 +32,7 @@ impl GraphicsHandler {
 		Rect::new(pos.x, pos.y, texture.query().width, texture.query().height)
 	}
 
-	pub fn get_texture(&mut self, image: &Image) -> &mut Texture {
+	pub fn get_texture(&mut self, image: &mut Image) -> &mut Texture {
 		self.sprite_cache.get_mut(&image.render()).unwrap()
 	}
 
@@ -39,7 +40,7 @@ impl GraphicsHandler {
 		self.text_cache.get_mut(text).unwrap()
 	}
 
-	pub fn render(&mut self, image: &Image, pos: Vector2<i32>) {
+	pub fn render(&mut self, image: &mut Image, pos: Vector2<i32>) {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(&path) {
 			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
@@ -63,14 +64,43 @@ impl GraphicsHandler {
 	}
 }
 
+pub struct Animation {
+	frames: Vec<String>,
+	frame: usize,
+	frame_length: Duration,
+	last_frame: Instant,
+}
+
+impl Animation {
+	pub fn new(frames: Vec<String>, frame_length: Duration) -> Self {
+		Self {
+			frames,
+			frame: 0,
+			frame_length,
+			last_frame: Instant::now(),
+		}
+	}
+
+	pub fn render(&mut self) -> String {
+		if Instant::now().duration_since(self.last_frame) >= self.frame_length {
+			self.frame = (self.frame + 1) % self.frames.len();
+			self.last_frame = Instant::now();
+		}
+
+		self.frames.get(self.frame).unwrap().clone()
+	}
+}
+
 pub enum Image {
+	Animation(Animation),
 	None,
 	Sprite(String),
 }
 
 impl Image {
-	pub fn render(&self) -> String {
+	pub fn render(&mut self) -> String {
 		match self {
+			Image::Animation(animation) => animation.render(),
 			Image::None => "".to_owned(),
 			Image::Sprite(path) => path.to_owned(),
 		}
