@@ -10,6 +10,7 @@ use std::collections::HashMap;
 
 pub struct GraphicsHandler {
 	pub canvas: WindowCanvas,
+	pub background_color: Color,
 	sprite_cache: HashMap<String, Texture>,
 	text_cache: HashMap<Text, Texture>,
 	ttf: Sdl2TtfContext,
@@ -19,6 +20,7 @@ impl GraphicsHandler {
 	pub fn new(canvas: WindowCanvas) -> Self {
 		Self {
 			canvas,
+			background_color: Color::BLACK,
 			sprite_cache: HashMap::new(),
 			text_cache: HashMap::new(),
 			ttf: sdl2::ttf::init().unwrap(),

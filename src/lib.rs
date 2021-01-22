@@ -53,6 +53,7 @@ impl<'engine> Engine<'_> {
 
 	pub fn update(&mut self) {
 		// Rnedering preparations
+		self.graphics.canvas.set_draw_color(self.graphics.background_color);
 		self.graphics.canvas.clear();
 
 		// Update input
