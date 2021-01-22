@@ -124,9 +124,11 @@ impl<'engine> Engine<'_> {
 	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {
 		self.layer_stack.last_mut().unwrap().on_pop(&mut self.global_data);
 		let stack_size = self.layer_stack.len();
-		if let Some(layer_gaining_focus) = self.layer_stack.get_mut(stack_size - 2) {
+		if stack_size > 1 {
 			// If this is none then we are popping the last layer, in which case nothing gains focus
-			layer_gaining_focus.on_gain_focus(&mut self.global_data);
+			if let Some(layer_gaining_focus) = self.layer_stack.get_mut(stack_size - 2) {
+				layer_gaining_focus.on_gain_focus(&mut self.global_data);
+			}
 		} else {
 			// If there is nothing to gain focus then we can just quit the program
 			self.running = false;

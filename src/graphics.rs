@@ -33,10 +33,23 @@ impl GraphicsHandler {
 	}
 
 	pub fn get_texture(&mut self, image: &mut Image) -> &mut Texture {
+		let path = image.render();
+		if !self.sprite_cache.contains_key(path) {
+			self.sprite_cache.insert(path.to_owned(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
+		}
+
 		self.sprite_cache.get_mut(image.render()).unwrap()
 	}
 
 	pub fn get_text_texture(&mut self, text: &Text) -> &mut Texture {
+		if !self.text_cache.contains_key(text) {
+			let font = self.ttf.load_font(text.font_path.clone(), text.size).unwrap();
+			self.text_cache.insert(
+				text.clone(),
+				self.canvas.create_texture_from_surface(font.render(&text.text.to_string()).blended_wrapped(text.color, self.canvas.output_size().unwrap().0).unwrap()).unwrap()
+			);
+		}
+		
 		self.text_cache.get_mut(text).unwrap()
 	}
 
