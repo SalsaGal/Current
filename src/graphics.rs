@@ -33,7 +33,7 @@ impl GraphicsHandler {
 	}
 
 	pub fn get_texture(&mut self, image: &mut Image) -> &mut Texture {
-		self.sprite_cache.get_mut(&image.render()).unwrap()
+		self.sprite_cache.get_mut(image.render()).unwrap()
 	}
 
 	pub fn get_text_texture(&mut self, text: &Text) -> &mut Texture {
@@ -42,11 +42,11 @@ impl GraphicsHandler {
 
 	pub fn render(&mut self, image: &mut Image, pos: Vector2<i32>) {
 		let path = image.render();
-		if !self.sprite_cache.contains_key(&path) {
-			self.sprite_cache.insert(path.clone(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
+		if !self.sprite_cache.contains_key(path) {
+			self.sprite_cache.insert(path.to_owned(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
 		}
 
-		let texture = self.sprite_cache.get(&path).unwrap();
+		let texture = self.sprite_cache.get(path).unwrap();
 		self.canvas.copy(texture, None, Self::get_bounds(texture, pos)).unwrap();
 	}
 
@@ -81,13 +81,13 @@ impl Animation {
 		}
 	}
 
-	pub fn render(&mut self) -> String {
+	pub fn render(&mut self) -> &str {
 		if Instant::now().duration_since(self.last_frame) >= self.frame_length {
 			self.frame = (self.frame + 1) % self.frames.len();
 			self.last_frame = Instant::now();
 		}
 
-		self.frames.get(self.frame).unwrap().clone()
+		self.frames.get(self.frame).unwrap()
 	}
 }
 
@@ -98,11 +98,11 @@ pub enum Image {
 }
 
 impl Image {
-	pub fn render(&mut self) -> String {
+	pub fn render(&mut self) -> &str {
 		match self {
 			Image::Animation(animation) => animation.render(),
-			Image::None => "".to_owned(),
-			Image::Sprite(path) => path.to_owned(),
+			Image::None => "",
+			Image::Sprite(path) => path,
 		}
 	}
 }
