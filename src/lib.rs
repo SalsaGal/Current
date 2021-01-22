@@ -34,7 +34,11 @@ impl<'engine> Engine<'_> {
 	pub fn new(window_title: &str, window_bounds: Vector2<u32>, mut layer: Box<dyn GameLayer>) -> Self {
 		let sdl2_context = sdl2::init().unwrap();
 		let sdl2_video = sdl2_context.video().unwrap();
-		let sdl2_window = WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).build().unwrap();
+		let sdl2_window = if window_bounds == Vector2::origin() {
+			WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).fullscreen_desktop().build().unwrap()
+		} else {
+			WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).build().unwrap()
+		};
 
 		Self {
 			event_pump: sdl2_context.event_pump().unwrap(),
