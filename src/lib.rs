@@ -96,6 +96,15 @@ impl<'engine> Engine<'_> {
 				}
 			}
 			Transition::Quit => self.quit(),
+			Transition::Replace(stack) => {
+				while self.layer_stack.len() > 0 {
+					self.pop_layer();
+				}
+				self.running = true;	// pop_layer calls quit when it realises the stack is empty which it is temporarily
+				for layer in stack.into_iter() {
+					self.push_layer(layer);
+				}
+			}
 		}
 
 		// Render
@@ -103,10 +112,9 @@ impl<'engine> Engine<'_> {
 	}
 
 	pub fn quit(&mut self) {
-		for _ in 0 .. self.layer_stack.len() - 1 {
+		while self.layer_stack.len() > 0 {
 			self.pop_layer();
 		}
-		self.running = false;
 	}
 
 	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {

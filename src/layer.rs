@@ -22,4 +22,5 @@ pub enum Transition {
 	Push(Box<dyn GameLayer>),
 	PushMulti(Vec<Box<dyn GameLayer>>),
 	Quit,
+	Replace(Vec<Box<dyn GameLayer>>),
 }
