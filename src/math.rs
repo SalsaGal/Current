@@ -82,7 +82,7 @@ impl<T> Div<Vector2<T>> for Vector2<T> where T: Div<T, Output = T> {
 	}
 }
 
-pub fn rect_collides(a: Rect, b: Rect) -> bool{
+pub fn rect_collides(a: Rect, b: Rect) -> bool {
 	let x_hitbox = a.w as f32 / 2.0 + b.w as f32 / 2.0;
 	let y_hitbox = a.h as f32 / 2.0 + b.h as f32 / 2.0;
 
@@ -90,4 +90,28 @@ pub fn rect_collides(a: Rect, b: Rect) -> bool{
 	let b_center = Vector2::new(b.w as f32 / 2.0 + b.x as f32, b.h as f32 / 2.0 + b.y as f32);
 
 	(a_center.x - b_center.x).abs() < x_hitbox && (a_center.y - b_center.y).abs() < y_hitbox
+}
+
+pub fn rect_intersection_depth(a: Rect, b: Rect) -> Option<Rect> {
+	let a_half_width = a.w as f32 / 2.0;
+	let a_half_height = a.h as f32 / 2.0;
+	let b_half_width = b.w as f32 / 2.0;
+	let b_half_height = b.h as f32 / 2.0;
+
+	let a_center = Vector2::new(a.x as f32 + a_half_width, a.y as f32 + a_half_height);
+	let b_center = Vector2::new(b.x as f32 + b_half_width, b.y as f32 + b_half_height);
+
+	let x_distance = a_center.x - b_center.x;
+	let y_distance = a_center.y - b_center.y;
+	let x_min_distance = a_half_width - b_half_width;
+	let y_min_distance = a_half_height - b_half_height;
+
+	if x_distance.abs() >= x_min_distance || y_distance >= y_min_distance {
+		None
+	} else {
+		Some(Vector2::new(
+			if x_distance > 0 { x_min_distance - x_distance } else { -x_min_distance - x_distance},
+			if y_distance > 0 { y_min_distance - y_distance } else { -y_min_distance - y_distance},
+		))
+	}
 }
