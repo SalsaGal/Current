@@ -12,9 +12,11 @@ pub use sdl2::{
 pub struct InputHandler {
 	keys_down: HashMap<Scancode, bool>,
 	keys_pressed: HashMap<Scancode, bool>,
+	keys_released: HashMap<Scancode, bool>,
 
 	buttons_down: HashMap<MouseButton, bool>,
 	buttons_pressed: HashMap<MouseButton, bool>,
+	buttons_released: HashMap<MouseButton, bool>,
 
 	pub click_pos: HashMap<MouseButton, Vector2<i32>>,
 	pub mouse_pos: Vector2<i32>,
@@ -25,9 +27,11 @@ impl InputHandler {
 		Self {
 			keys_down: HashMap::new(),
 			keys_pressed: HashMap::new(),
+			keys_released: HashMap::new(),
 
 			buttons_down: HashMap::new(),
 			buttons_pressed: HashMap::new(),
+			buttons_released: HashMap::new(),
 
 			click_pos: HashMap::new(),
 			mouse_pos: Vector2::origin(),
@@ -42,6 +46,7 @@ impl InputHandler {
 			},
 			Event::KeyUp { scancode, .. } => {
 				self.keys_down.insert(scancode.unwrap(), false);
+				self.keys_released.insert(scancode.unwrap(), true);
 			},
 			Event::MouseButtonDown { mouse_btn, x, y, .. } => {
 				self.buttons_down.insert(mouse_btn, true);
@@ -52,6 +57,7 @@ impl InputHandler {
 			}
 			Event::MouseButtonUp { mouse_btn, .. } => {
 				self.buttons_down.insert(mouse_btn, false);
+				self.buttons_released.insert(mouse_btn, true);
 				self.click_pos.remove(&mouse_btn);
 			}
 			Event::MouseMotion { x, y, .. } => {
@@ -63,7 +69,9 @@ impl InputHandler {
 
 	pub fn update(&mut self) {
 		self.keys_pressed.clear();
+		self.keys_released.clear();
 		self.buttons_pressed.clear();
+		self.buttons_released.clear();
 	}
 
 	pub fn key_is(&self, key: Scancode, state: InputState) -> bool {
@@ -90,5 +98,6 @@ impl InputHandler {
 pub enum InputState {
 	Down,
 	Pressed,
+	Released,
 	Up,
 }
