@@ -79,6 +79,7 @@ impl InputHandler {
 			InputState::Down => *self.keys_down.get(&key).unwrap_or(&false),
 			InputState::Pressed => *self.keys_pressed.get(&key).unwrap_or(&false),
 			InputState::Up => !self.keys_down.get(&key).unwrap_or(&false),
+			InputState::Released => *self.keys_released.get(&button).unwrap_or(&false),
 		}
 	}
 
@@ -87,6 +88,7 @@ impl InputHandler {
 			InputState::Down => *self.buttons_down.get(&button).unwrap_or(&false),
 			InputState::Pressed => *self.buttons_pressed.get(&button).unwrap_or(&false),
 			InputState::Up => !self.buttons_down.get(&button).unwrap_or(&false),
+			InputState::Released => *self.buttons_released.get(&button).unwrap_or(&false),
 		}
 	}
 
