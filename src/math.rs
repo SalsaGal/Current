@@ -92,7 +92,7 @@ pub fn rect_collides(a: Rect, b: Rect) -> bool {
 	(a_center.x - b_center.x).abs() < x_hitbox && (a_center.y - b_center.y).abs() < y_hitbox
 }
 
-pub fn rect_intersection_depth(a: Rect, b: Rect) -> Option<Rect> {
+pub fn rect_intersection_depth(a: Rect, b: Rect) -> Option<Vector2<f32>> {
 	let a_half_width = a.w as f32 / 2.0;
 	let a_half_height = a.h as f32 / 2.0;
 	let b_half_width = b.w as f32 / 2.0;
