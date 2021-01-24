@@ -110,8 +110,8 @@ pub fn rect_intersection_depth(a: Rect, b: Rect) -> Option<Vector2<f32>> {
 		None
 	} else {
 		Some(Vector2::new(
-			if x_distance > 0 { x_min_distance - x_distance } else { -x_min_distance - x_distance},
-			if y_distance > 0 { y_min_distance - y_distance } else { -y_min_distance - y_distance},
+			if x_distance > 0.0 { x_min_distance - x_distance } else { -x_min_distance - x_distance},
+			if y_distance > 0.0 { y_min_distance - y_distance } else { -y_min_distance - y_distance},
 		))
 	}
 }
