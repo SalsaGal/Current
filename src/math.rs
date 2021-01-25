@@ -30,6 +30,10 @@ impl<T> Vector2<T> {
 		}
 	}
 
+	pub fn as_tuple(&self) -> (T, T) where T: Copy {
+		( self.x, self.y )
+	}
+
 	pub fn point_collides(&self, rect: Rect) -> bool where T: Into<i32> + Copy {
 		self.x.into() > rect.x &&
 		self.x.into() < rect.x + rect.w &&
