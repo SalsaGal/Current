@@ -120,6 +120,21 @@ impl Image {
 	}
 }
 
+impl Clone for Image {
+	fn clone(&self) -> Self {
+		match self {
+			Image::Animation(animation) => Image::Animation(Animation {
+				frames: animation.frames.clone(),
+				frame: animation.frame,
+				frame_length: animation.frame_length,
+				last_frame: animation.last_frame,
+			}),
+			Image::None => Image::None,
+			Image::Sprite(path) => Image::Sprite(path.clone()),
+		}
+	}
+}
+
 #[derive(Eq, Hash, PartialEq)]
 pub struct Text {
     pub text: String,
