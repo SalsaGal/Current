@@ -40,9 +40,11 @@ impl InputHandler {
 	
 	pub fn event(&mut self, event: Event) {
 		match event {
-			Event::KeyDown { scancode, .. } => {
-				self.keys_down.insert(scancode.unwrap(), true);
-				self.keys_pressed.insert(scancode.unwrap(), true);
+			Event::KeyDown { repeat, scancode, .. } => {
+				if !repeat {
+					self.keys_down.insert(scancode.unwrap(), true);
+					self.keys_pressed.insert(scancode.unwrap(), true);
+				}
 			},
 			Event::KeyUp { scancode, .. } => {
 				self.keys_down.insert(scancode.unwrap(), false);
