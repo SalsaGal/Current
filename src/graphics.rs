@@ -53,8 +53,7 @@ impl GraphicsHandler {
 		self.text_cache.get_mut(text).unwrap()
 	}
 
-	pub fn render(&mut self, image: &mut Image, pos: Vector2<i32>) {
-		let path = image.render();
+	pub fn render(&mut self, path: &str, pos: Vector2<i32>) {
 		if !self.sprite_cache.contains_key(path) {
 			self.sprite_cache.insert(path.to_owned(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
 		}
