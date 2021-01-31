@@ -35,10 +35,10 @@ impl<T> Vector2<T> {
 	}
 
 	pub fn point_collides(&self, rect: Rect) -> bool where T: Into<i32> + Copy {
-		self.x.into() > rect.x &&
-		self.x.into() < rect.x + rect.w &&
-		self.y.into() > rect.y &&
-		self.y.into() < rect.y + rect.h
+		self.x.into() >= rect.x &&
+		self.x.into() <= rect.x + rect.w &&
+		self.y.into() >= rect.y &&
+		self.y.into() <= rect.y + rect.h
 	}
 }
 
