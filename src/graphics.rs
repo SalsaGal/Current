@@ -53,6 +53,10 @@ impl GraphicsHandler {
 		self.text_cache.get_mut(text).unwrap()
 	}
 
+	pub fn get_window_bounds(&self) -> Vector2<u32> {
+		Vector2::new(self.canvas.output_size().unwrap().0, self.canvas.output_size().unwrap().1)
+	}
+
 	pub fn render(&mut self, path: &str, pos: Vector2<i32>) {
 		if !self.sprite_cache.contains_key(path) {
 			self.sprite_cache.insert(path.to_owned(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
