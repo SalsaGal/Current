@@ -2,6 +2,7 @@ pub mod graphics;
 pub mod input;
 pub mod math;
 pub mod layer;
+pub mod prelude;
 
 use graphics::GraphicsHandler;
 use input::InputHandler;
