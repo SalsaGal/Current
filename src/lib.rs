@@ -86,7 +86,7 @@ impl<'engine> Engine<'_> {
 		let layer_max = self.layer_stack.len() - 1;
 		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			transition = layer.update(&mut self.global_data, &mut self.audio, &mut self.graphics, &self.input_handler, index == layer_max);
+			transition = layer.update(&mut self.global_data, &mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
 			Transition::None => {}
