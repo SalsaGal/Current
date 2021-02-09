@@ -41,16 +41,18 @@ impl<'engine> Engine<'_> {
 			WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).build().unwrap()
 		};
 
+		let mut global_data = GlobalData::new();
+
 		Self {
 			event_pump: sdl2_context.event_pump().unwrap(),
 			graphics: GraphicsHandler::new(sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap()),
 
 			layer_stack: {
-				layer.on_push(&mut GlobalData::new());
+				layer.on_push(&mut global_data);
 				vec![ layer ]
 			},
 
-			global_data: GlobalData::new(),
+			global_data,
 			input_handler: InputHandler::new(),
 			running: true
 		}
@@ -84,7 +86,7 @@ impl<'engine> Engine<'_> {
 		let layer_max = self.layer_stack.len() - 1;
 		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			transition = layer.update(&mut self.global_data, &mut self.graphics, &self.input_handler, index == layer_max);
+			transition = layer.update(&mut self.global_data, &mut self.audio, &mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
 			Transition::None => {}
