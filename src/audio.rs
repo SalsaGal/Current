@@ -7,15 +7,15 @@ use std::fs::File;
 
 pub struct AudioHandler {
 	handle: OutputStreamHandle,
-	stream: OutputStream,
+	_stream: OutputStream,
 }
 
 impl AudioHandler {
 	pub fn new() -> Self {
-		let (stream, handle) = OutputStream::try_default().unwrap();
+		let (_stream, handle) = OutputStream::try_default().unwrap();
 		Self {
 			handle,
-			stream,
+			_stream,
 		}
 	}
 
