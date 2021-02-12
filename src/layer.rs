@@ -1,4 +1,5 @@
 use crate::GlobalData;
+use crate::audio::AudioHandler;
 use crate::graphics::GraphicsHandler;
 use crate::input::InputHandler;
 
@@ -12,7 +13,7 @@ pub trait GameLayer {
 	// WHen a layer is taken off from on top of it
 	fn on_gain_focus(&mut self, _data: &mut GlobalData) {}
 	
-	fn update(&mut self, _data: &mut GlobalData, _graphics: &mut GraphicsHandler, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
+	fn update(&mut self, _data: &mut GlobalData, _audio: &mut AudioHandler, _graphics: &mut GraphicsHandler, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
 }
 
 pub struct EmptyLayer;
@@ -26,7 +27,7 @@ impl GameLayer for EmptyLayer {
 	// WHen a layer is taken off from on top of it
 	fn on_gain_focus(&mut self, _data: &mut GlobalData) {}
 	
-	fn update(&mut self, _data: &mut GlobalData, _graphics: &mut GraphicsHandler, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
+	fn update(&mut self, _data: &mut GlobalData, _audio: &mut AudioHandler, _graphics: &mut GraphicsHandler, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
 }
 
 pub enum Transition {

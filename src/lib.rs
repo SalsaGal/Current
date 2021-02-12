@@ -1,17 +1,19 @@
+pub mod audio;
 pub mod graphics;
 pub mod input;
 pub mod math;
 pub mod layer;
 pub mod prelude;
 
+use audio::AudioHandler;
 use graphics::GraphicsHandler;
 use input::InputHandler;
 use math::Vector2;
 use layer::{GameLayer, Transition};
 
 use sdl2::{
-	event::Event,
 	EventPump,
+	event::Event,
 	video::WindowBuilder,
 };
 
@@ -22,6 +24,7 @@ pub type GlobalData<'data> = HashMap<&'data str, Box<dyn Any>>;
 
 pub struct Engine<'engine> {
 	event_pump: EventPump,
+	pub audio: AudioHandler,
 	pub graphics: GraphicsHandler,
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
@@ -45,6 +48,7 @@ impl<'engine> Engine<'_> {
 
 		Self {
 			event_pump: sdl2_context.event_pump().unwrap(),
+			audio: AudioHandler::new(),
 			graphics: GraphicsHandler::new(sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap()),
 
 			layer_stack: {
@@ -86,7 +90,7 @@ impl<'engine> Engine<'_> {
 		let layer_max = self.layer_stack.len() - 1;
 		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			transition = layer.update(&mut self.global_data, &mut self.graphics, &self.input_handler, index == layer_max);
+			transition = layer.update(&mut self.global_data, &mut self.audio, &mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
 			Transition::None => {}
