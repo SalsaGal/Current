@@ -20,7 +20,41 @@ use sdl2::{
 use std::any::Any;
 use std::collections::HashMap;
 
-pub type GlobalData<'data> = HashMap<&'data str, Box<dyn Any>>;
+pub struct GlobalData<'data> {
+	data: HashMap<&'data str, Box<dyn Any>>,
+}
+
+impl<'data> GlobalData<'data> {
+	fn new() -> Self {
+		Self {
+			data: HashMap::new(),
+		}
+	}
+
+	pub fn get<Type: 'static>(&mut self, var: &str) -> Option<&Type> {
+		let data = self.data.get(var);
+
+		if let Some(val) = data {
+			Some(val.downcast_ref::<Type>().unwrap())
+		} else {
+			None
+		}
+	}
+
+	pub fn get_mut<Type: 'static>(&mut self, var: &str) -> Option<&mut Type> {
+		let data = self.data.get_mut(var);
+
+		if let Some(val) = data {
+			Some(val.downcast_mut::<Type>().unwrap())
+		} else {
+			None
+		}
+	}
+
+	pub fn set(&mut self, var: &'data str, val: Box<dyn Any>) {
+		self.data.insert(var, val);
+	}
+}
 
 pub struct Engine<'engine> {
 	event_pump: EventPump,
