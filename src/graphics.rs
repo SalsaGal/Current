@@ -1,3 +1,8 @@
+//! Functions around rendering graphics.
+//! 
+//! The handler stores all sprites in a cache, so there is no duplication of sprites.
+//! They never get deleted, but this will be fixed eventually.
+
 pub use sdl2::pixels::Color;
 
 use crate::math::{Rect, Vector2};
@@ -18,7 +23,7 @@ pub struct GraphicsHandler {
 }
 
 impl GraphicsHandler {
-	pub fn new(canvas: WindowCanvas) -> Self {
+	pub(crate) fn new(canvas: WindowCanvas) -> Self {
 		Self {
 			canvas,
 			background_color: Color::BLACK,
@@ -28,10 +33,12 @@ impl GraphicsHandler {
 		}
 	}
 
+	/// Returns the bounds of the texture.
 	pub fn get_bounds(texture: &Texture, pos: Vector2<i32>) -> Rect {
 		Rect::new(pos.x, pos.y, texture.query().width, texture.query().height)
 	}
 
+	/// Returns a mutable reference to the texture in the cache, mostly for the sake of manipulation.
 	pub fn get_texture(&mut self, image: &mut Image) -> &mut Texture {
 		let path = image.render();
 		if !self.sprite_cache.contains_key(path) {
@@ -41,6 +48,7 @@ impl GraphicsHandler {
 		self.sprite_cache.get_mut(image.render()).unwrap()
 	}
 
+	/// Returns a mutable reference to the text texture in the cache, mostly for the sake of manipulation.
 	pub fn get_text_texture(&mut self, text: &Text) -> &mut Texture {
 		if !self.text_cache.contains_key(text) {
 			let font = self.ttf.load_font(text.font_path.clone(), text.size).unwrap();
@@ -53,10 +61,13 @@ impl GraphicsHandler {
 		self.text_cache.get_mut(text).unwrap()
 	}
 
+	/// Get the bounds of the game window.
 	pub fn get_window_bounds(&self) -> Vector2<u32> {
 		Vector2::new(self.canvas.output_size().unwrap().0, self.canvas.output_size().unwrap().1)
 	}
 
+	/// Render an image. You give the path to the image as the argument, which is usually extracted from the image with
+	/// `Image::render`.
 	pub fn render(&mut self, path: &str, pos: Vector2<i32>) {
 		if !self.sprite_cache.contains_key(path) {
 			self.sprite_cache.insert(path.to_owned(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
@@ -66,6 +77,7 @@ impl GraphicsHandler {
 		self.canvas.copy(texture, None, Self::get_bounds(texture, pos)).unwrap();
 	}
 
+	/// Render the text objects.
 	pub fn render_text(&mut self, text: &Text, pos: Vector2<i32>) {
 		if !self.text_cache.contains_key(text) {
 			let font = self.ttf.load_font(text.font_path.clone(), text.size).unwrap();
