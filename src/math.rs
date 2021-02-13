@@ -1,7 +1,11 @@
+//! Structs and functions for general maths.
+
 pub use sdl2::rect::Rect;
 
 use std::ops::{Add, Div, Mul, Sub};
 
+/// A struct which contains two values of the same type, typically used to represent
+/// 2D values, like map positions.
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
 pub struct Vector2<T> {
 	pub x: T,
@@ -9,6 +13,7 @@ pub struct Vector2<T> {
 }
 
 impl<T> Vector2<T> {
+	/// Creates a Vector2 with two seperate values
 	pub fn new(x: T, y: T) -> Self where T: Copy {
 		Self {
 			x,
@@ -16,6 +21,7 @@ impl<T> Vector2<T> {
 		}
 	}
 
+	/// Convenience function to create a Vector2 where the two values are the same. 
 	pub fn square(w: T) -> Self where T: Copy {
 		Self {
 			x: w,
@@ -23,6 +29,7 @@ impl<T> Vector2<T> {
 		}
 	}
 
+	/// Convenience function to create a Vector2 where the two values are 0. 
 	pub fn origin() -> Self where T: Default {
 		Self {
 			x: T::default(),
@@ -30,10 +37,12 @@ impl<T> Vector2<T> {
 		}
 	}
 
+	/// Converts the Vector2 into a tuple, typically for debugging.
 	pub fn as_tuple(&self) -> (T, T) where T: Copy {
 		( self.x, self.y )
 	}
 
+	/// Check if the point is in the bounds of an SDL2 `Rect`.
 	pub fn point_collides(&self, rect: Rect) -> bool where T: Into<i32> + Copy {
 		self.x.into() >= rect.x &&
 		self.x.into() <= rect.x + rect.w &&
@@ -86,6 +95,7 @@ impl<T> Div<Vector2<T>> for Vector2<T> where T: Div<T, Output = T> {
 	}
 }
 
+/// Checks if two SDL2 `Rect`s overlap
 pub fn rect_collides(a: Rect, b: Rect) -> bool {
 	let x_hitbox = a.w as f32 / 2.0 + b.w as f32 / 2.0;
 	let y_hitbox = a.h as f32 / 2.0 + b.h as f32 / 2.0;
