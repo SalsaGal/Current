@@ -1,3 +1,23 @@
+//! The Current engine is a game engine with the main goals of being extremely
+//! simple to implement into a game.
+//! 
+//! Very little is needed to initialise the engine:
+//! ```
+//! use current::layer::EmptyLayer;
+//! use current::prelude::*;
+//! 
+//! fn main() {
+//! 	let mut engine = Engine::new("Title", Vector2::new(640, 480), Box::new(EmptyLayer));
+//! 
+//! 	while engine.running {
+//! 		engine.update();
+//! 
+//! 		// This example is capped to 60 FPS
+//! 		std::thread::sleep(std::time::Duration::from_millis(1000 / 60));
+//! 	}
+//! }
+//! ```
+
 pub mod audio;
 pub mod graphics;
 pub mod input;
@@ -20,6 +40,7 @@ use sdl2::{
 use std::any::Any;
 use std::collections::HashMap;
 
+/// A struct that stores data that should be accessible by all layers.
 pub struct GlobalData<'data> {
 	data: HashMap<&'data str, Box<dyn Any>>,
 }
@@ -56,6 +77,7 @@ impl<'data> GlobalData<'data> {
 	}
 }
 
+/// The `Engine` struct stores all components of the engine and manages them all.
 pub struct Engine<'engine> {
 	event_pump: EventPump,
 	pub audio: AudioHandler,
@@ -69,6 +91,9 @@ pub struct Engine<'engine> {
 }
 
 impl<'engine> Engine<'_> {
+	/// Create a new instance of the Engine and all its components.
+	/// 
+	/// If `window_bounds` is `Vector2::origin()` then the window will be created full screen.
 	pub fn new(window_title: &str, window_bounds: Vector2<u32>, mut layer: Box<dyn GameLayer>) -> Self {
 		let sdl2_context = sdl2::init().unwrap();
 		let sdl2_video = sdl2_context.video().unwrap();
@@ -96,6 +121,9 @@ impl<'engine> Engine<'_> {
 		}
 	}
 
+	/// Updates all components of the engine.
+	/// 
+	/// This function should be called every frame.
 	pub fn update(&mut self) {
 		// Rnedering preparations
 		self.graphics.canvas.set_draw_color(self.graphics.background_color);

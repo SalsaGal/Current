@@ -7,3 +7,7 @@ $opt default_positionals
 #- r
 	cargo run --example $1
 #/
+
+#docs
+	cargo doc --open
+#/
