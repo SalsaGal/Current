@@ -8,7 +8,7 @@ pub use sdl2::pixels::Color;
 use crate::math::{Rect, Vector2};
 
 pub use sdl2::image::LoadTexture;
-pub use sdl2::render::{Texture, WindowCanvas};
+pub use sdl2::render::{BlendMode, Texture, WindowCanvas};
 pub use sdl2::ttf::Sdl2TtfContext;
 
 use std::collections::HashMap;
@@ -23,7 +23,8 @@ pub struct GraphicsHandler {
 }
 
 impl GraphicsHandler {
-	pub(crate) fn new(canvas: WindowCanvas) -> Self {
+	pub(crate) fn new(mut canvas: WindowCanvas) -> Self {
+		canvas.set_blend_mode(BlendMode::Blend);
 		Self {
 			canvas,
 			background_color: Color::BLACK,
