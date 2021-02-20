@@ -72,6 +72,10 @@ impl<'data> GlobalData<'data> {
 		}
 	}
 
+	pub fn remove(&mut self, var: &'data str) -> Option<Box<dyn Any>> {
+		self.data.remove(var)
+	}
+
 	pub fn set(&mut self, var: &'data str, val: Box<dyn Any>) {
 		self.data.insert(var, val);
 	}
