@@ -6,7 +6,7 @@ use std::ops::{Add, Div, Mul, Sub};
 
 /// A struct which contains two values of the same type, typically used to represent
 /// 2D values, like map positions.
-#[derive(Clone, Copy, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Vector2<T> {
 	pub x: T,
 	pub y: T,
