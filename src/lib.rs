@@ -92,6 +92,8 @@ pub struct Engine<'engine> {
 	pub global_data: GlobalData<'engine>,
 	pub input_handler: InputHandler,
 	pub running: bool,
+
+	pub frame_limit: Option<u8>,
 }
 
 impl<'engine> Engine<'_> {
@@ -121,7 +123,9 @@ impl<'engine> Engine<'_> {
 
 			global_data,
 			input_handler: InputHandler::new(),
-			running: true
+			running: true,
+
+			frame_limit: None,
 		}
 	}
 
@@ -186,6 +190,11 @@ impl<'engine> Engine<'_> {
 
 		// Render
 		self.graphics.canvas.present();
+
+		// Frame limit
+		if let Some(frame_rate) = self.frame_limit {
+			std::thread::sleep(std::time::Duration::from_millis(1000 / frame_rate as u64));
+		}
 	}
 
 	pub fn quit(&mut self) {
