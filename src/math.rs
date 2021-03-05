@@ -37,6 +37,14 @@ impl<T> Vector2<T> {
 		}
 	}
 
+	/// Returns a Vector2 which converts the types it stores.
+	pub fn from<U>(other: Vector2<U>) -> Self where T: From<U> {
+		Self {
+			x: other.x.into(),
+			y: other.y.into(),
+		}
+	}
+
 	/// Converts the Vector2 into a tuple, typically for debugging.
 	pub fn as_tuple(&self) -> (T, T) where T: Copy {
 		( self.x, self.y )
