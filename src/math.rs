@@ -130,14 +130,3 @@ impl<T> DivAssign<Vector2<T>> for Vector2<T> where T: DivAssign<T> {
 		self.y /= other.y;
 	}
 }
-
-/// Checks if two SDL2 `Rect`s overlap
-pub fn rect_collides(a: Rect, b: Rect) -> bool {
-	let x_hitbox = a.w as f32 / 2.0 + b.w as f32 / 2.0;
-	let y_hitbox = a.h as f32 / 2.0 + b.h as f32 / 2.0;
-
-	let a_center = Vector2::new(a.w as f32 / 2.0 + a.x as f32, a.h as f32 / 2.0 + a.y as f32);
-	let b_center = Vector2::new(b.w as f32 / 2.0 + b.x as f32, b.h as f32 / 2.0 + b.y as f32);
-
-	(a_center.x - b_center.x).abs() < x_hitbox && (a_center.y - b_center.y).abs() < y_hitbox
-}
