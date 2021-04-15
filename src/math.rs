@@ -2,7 +2,7 @@
 
 pub use sdl2::rect::Rect;
 
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Sub, AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// A struct which contains two values of the same type, typically used to represent
 /// 2D values, like map positions.
@@ -100,6 +100,34 @@ impl<T> Div<Vector2<T>> for Vector2<T> where T: Div<T, Output = T> {
 			x: self.x / other.x,
 			y: self.y / other.y,
 		}
+	}
+}
+
+impl<T> AddAssign<Vector2<T>> for Vector2<T> where T: AddAssign<T> {
+	fn add_assign(&mut self, other: Self) {
+		self.x += other.x;
+		self.y += other.y;
+	}
+}
+
+impl<T> SubAssign<Vector2<T>> for Vector2<T> where T: SubAssign<T> {
+	fn sub_assign(&mut self, other: Self) {
+		self.x -= other.x;
+		self.y -= other.y;
+	}
+}
+
+impl<T> MulAssign<Vector2<T>> for Vector2<T> where T: MulAssign<T> {
+	fn mul_assign(&mut self, other: Self) {
+		self.x *= other.x;
+		self.y *= other.y;
+	}
+}
+
+impl<T> DivAssign<Vector2<T>> for Vector2<T> where T: DivAssign<T> {
+	fn div_assign(&mut self, other: Self) {
+		self.x /= other.x;
+		self.y /= other.y;
 	}
 }
 
