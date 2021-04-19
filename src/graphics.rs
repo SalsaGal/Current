@@ -70,6 +70,10 @@ impl GraphicsHandler {
 	/// Render an image. You give the path to the image as the argument, which is usually extracted from the image with
 	/// `Image::render`.
 	pub fn render(&mut self, path: &str, pos: Vector2<i32>) {
+		if path == "" {
+			return;
+		}
+		
 		if !self.sprite_cache.contains_key(path) {
 			self.sprite_cache.insert(path.to_owned(), self.canvas.texture_creator().load_texture(path.clone()).unwrap());
 		}
