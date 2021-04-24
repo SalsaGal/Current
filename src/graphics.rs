@@ -3,16 +3,15 @@
 //! The handler stores all sprites in a cache, so there is no duplication of sprites.
 //! They never get deleted, but this will be fixed eventually.
 
-pub use sdl2::pixels::Color;
-
 use crate::math::{Rect, Vector2};
-
-pub use sdl2::image::LoadTexture;
-pub use sdl2::render::{BlendMode, Texture, WindowCanvas};
-pub use sdl2::ttf::Sdl2TtfContext;
 
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
+
+pub use sdl2::image::LoadTexture;
+pub use sdl2::pixels::Color;
+pub use sdl2::render::{BlendMode, Texture, WindowCanvas};
+pub use sdl2::ttf::Sdl2TtfContext;
 
 pub struct GraphicsHandler {
 	pub canvas: WindowCanvas,
@@ -97,10 +96,12 @@ impl GraphicsHandler {
 	}
 }
 
+#[cfg_attr(feature="serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Animation {
 	frames: Vec<String>,
 	frame: usize,
 	frame_length: Duration,
+	#[cfg_attr(feature="serde", serde(skip, default="Instant::now"))]
 	last_frame: Instant,
 }
 
@@ -124,6 +125,7 @@ impl Animation {
 	}
 }
 
+#[cfg_attr(feature="serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Image {
 	Animation(Animation),
 	None,
@@ -157,10 +159,10 @@ impl Clone for Image {
 
 #[derive(Eq, Hash, PartialEq)]
 pub struct Text {
-    pub text: String,
-    pub font_path: String,
-    pub size: u16,
-    pub color: Color,
+	pub text: String,
+	pub font_path: String,
+	pub size: u16,
+	pub color: Color,
 }
 
 impl Clone for Text {
