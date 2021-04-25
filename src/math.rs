@@ -2,6 +2,7 @@
 
 pub use sdl2::rect::Rect;
 
+use std::default::Default;
 use std::ops::{Add, Div, Mul, Sub, AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// A struct which contains two values of the same type, typically used to represent
@@ -32,10 +33,7 @@ impl<T> Vector2<T> {
 
 	/// Convenience function to create a Vector2 where the two values are 0. 
 	pub fn origin() -> Self where T: Default {
-		Self {
-			x: T::default(),
-			y: T::default(),
-		}
+		Self::default()
 	}
 
 	/// Returns a Vector2 which converts the types it stores.
@@ -57,6 +55,15 @@ impl<T> Vector2<T> {
 		self.x.into() <= rect.x + rect.w &&
 		self.y.into() >= rect.y &&
 		self.y.into() <= rect.y + rect.h
+	}
+}
+
+impl<T> Default for Vector2<T> where T: Default {
+	fn default() -> Self {
+		Self {
+			x: T::default(),
+			y: T::default(),
+		}
 	}
 }
 
