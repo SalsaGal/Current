@@ -66,8 +66,24 @@ impl<'data> GlobalData<'data> {
 		}
 	}
 
+	pub fn bool_mut(&mut self, var: &str) -> Option<&mut bool> {
+		if let Some(Data::Bool(to_ret)) = self.data.get_mut(var) {
+			Some(to_ret)
+		} else {
+			None
+		}
+	}
+
 	pub fn string_ref(&self, var: &str) -> Option<&String> {
 		if let Some(Data::String(to_ret)) = self.data.get(var) {
+			Some(to_ret)
+		} else {
+			None
+		}
+	}
+
+	pub fn string_mut(&mut self, var: &str) -> Option<&mut String> {
+		if let Some(Data::String(to_ret)) = self.data.get_mut(var) {
 			Some(to_ret)
 		} else {
 			None
