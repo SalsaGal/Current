@@ -39,6 +39,7 @@ use sdl2::{
 
 use std::any::Any;
 use std::collections::HashMap;
+use std::ops::{Index, IndexMut};
 
 /// An enum used to store different types of data accessible across the whole game
 #[derive(Debug)]
@@ -108,7 +109,7 @@ impl<'data> GlobalData<'data> {
 		}
 	}
 
-	pub fn get(&mut self, var: &str) -> Option<&Data> {
+	pub fn get(&self, var: &str) -> Option<&Data> {
 		self.data.get(var)
 	}
 
@@ -118,6 +119,19 @@ impl<'data> GlobalData<'data> {
 
 	pub fn set(&mut self, var: &'data str, data: Data) {
 		self.data.insert(var, data);
+	}
+}
+
+impl Index<&str> for GlobalData<'_> {
+	type Output = Data;
+	fn index(&self, index: &str) -> &Self::Output {
+		self.get(index).unwrap()
+	}
+}
+
+impl IndexMut<&str> for GlobalData<'_> {
+	fn index_mut(&mut self, index: &str) -> &mut Self::Output {
+		self.get_mut(index).unwrap()
 	}
 }
 
