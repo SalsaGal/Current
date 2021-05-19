@@ -37,11 +37,13 @@ use sdl2::{
 	video::WindowBuilder,
 };
 
+use std::any::Any;
 use std::collections::HashMap;
 
 /// An enum used to store different types of data accessible across the whole game
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug)]
 pub enum Data {
+	Any(Box<dyn Any>),
 	Bool(bool),
 	String(String),
 }
@@ -55,6 +57,22 @@ impl<'data> GlobalData<'data> {
 	fn new() -> Self {
 		Self {
 			data: HashMap::new(),
+		}
+	}
+
+	pub fn any_ref(&self, var: &str) -> Option<&Box<dyn Any>> {
+		if let Some(Data::Any(to_ret)) = self.data.get(var) {
+			Some(to_ret)
+		} else {
+			None
+		}
+	}
+
+	pub fn any_mut(&mut self, var: &str) -> Option<&mut Box<dyn Any>> {
+		if let Some(Data::Any(to_ret)) = self.data.get_mut(var) {
+			Some(to_ret)
+		} else {
+			None
 		}
 	}
 
