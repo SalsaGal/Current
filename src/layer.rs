@@ -8,15 +8,15 @@ use crate::input::InputHandler;
 /// The trait that is actually used to create usable game layers.
 pub trait GameLayer {
 	/// Called when this layer is added to the stack.
-	fn on_push(&mut self, _data: &mut GlobalData) {}
+	fn on_push(&mut self, _: &mut GlobalData) {}
 	/// Called when this layer is taken off the stack.
-	fn on_pop(&mut self, _data: &mut GlobalData) {}
+	fn on_pop(&mut self, _: &mut GlobalData) {}
 	/// Called when another layer is put on top of this.
-	fn on_lose_focus(&mut self, _data: &mut GlobalData) {}
+	fn on_lose_focus(&mut self, _: &mut GlobalData) {}
 	/// Called when another layer is taken off from on top of this.
-	fn on_gain_focus(&mut self, _data: &mut GlobalData) {}
+	fn on_gain_focus(&mut self, _: &mut GlobalData) {}
 	/// Called by the `Engine::update` function.
-	fn update(&mut self, _data: &mut GlobalData, _audio: &mut AudioHandler, _graphics: &mut GraphicsHandler, _input: &InputHandler, _focused: bool) -> Transition { Transition::None }
+	fn update(&mut self, _: &mut GlobalData, _: &mut AudioHandler, _: &mut GraphicsHandler, _: &InputHandler, _: bool) -> Transition { Transition::None }
 }
 
 /// A simple layer with no programming made primarily for testing purposes.

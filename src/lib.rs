@@ -37,12 +37,18 @@ use sdl2::{
 	video::WindowBuilder,
 };
 
-use std::any::Any;
 use std::collections::HashMap;
+
+/// An enum used to store different types of data accessible across the whole game
+#[derive(Debug, Eq, PartialEq)]
+pub enum Data {
+	Bool(bool),
+	String(String),
+}
 
 /// A struct that stores data that should be accessible by all layers.
 pub struct GlobalData<'data> {
-	data: HashMap<&'data str, Box<dyn Any>>,
+	data: HashMap<&'data str, Data>,
 }
 
 impl<'data> GlobalData<'data> {
@@ -52,32 +58,32 @@ impl<'data> GlobalData<'data> {
 		}
 	}
 
-	pub fn get<Type: 'static>(&mut self, var: &str) -> Option<&Type> {
-		let data = self.data.get(var);
-
-		if let Some(val) = data {
-			Some(val.downcast_ref::<Type>().unwrap())
+	pub fn bool_ref(&self, var: &str) -> Option<&bool> {
+		if let Some(Data::Bool(to_ret)) = self.data.get(var) {
+			Some(to_ret)
 		} else {
 			None
 		}
 	}
 
-	pub fn get_mut<Type: 'static>(&mut self, var: &str) -> Option<&mut Type> {
-		let data = self.data.get_mut(var);
-
-		if let Some(val) = data {
-			Some(val.downcast_mut::<Type>().unwrap())
+	pub fn string_ref(&self, var: &str) -> Option<&String> {
+		if let Some(Data::String(to_ret)) = self.data.get(var) {
+			Some(to_ret)
 		} else {
 			None
 		}
 	}
 
-	pub fn remove(&mut self, var: &'data str) -> Option<Box<dyn Any>> {
-		self.data.remove(var)
+	pub fn get(&mut self, var: &str) -> Option<&Data> {
+		self.data.get(var)
 	}
 
-	pub fn set(&mut self, var: &'data str, val: Box<dyn Any>) {
-		self.data.insert(var, val);
+	pub fn get_mut(&mut self, var: &str) -> Option<&mut Data> {
+		self.data.get_mut(var)
+	}
+
+	pub fn set(&mut self, var: &'data str, data: Data) {
+		self.data.insert(var, data);
 	}
 }
 
@@ -89,7 +95,7 @@ pub struct Engine<'engine> {
 
 	layer_stack: Vec<Box<dyn GameLayer>>,
 
-	pub global_data: GlobalData<'engine>,
+	pub data: GlobalData<'engine>,
 	pub input_handler: InputHandler,
 	pub running: bool,
 
@@ -109,7 +115,7 @@ impl<'engine> Engine<'_> {
 			WindowBuilder::new(&sdl2_video, window_title, window_bounds.x, window_bounds.y).build().unwrap()
 		};
 
-		let mut global_data = GlobalData::new();
+		let mut data = GlobalData::new();
 
 		Self {
 			event_pump: sdl2_context.event_pump().unwrap(),
@@ -117,11 +123,11 @@ impl<'engine> Engine<'_> {
 			graphics: GraphicsHandler::new(sdl2_window.into_canvas().accelerated().present_vsync().build().unwrap()),
 
 			layer_stack: {
-				layer.on_push(&mut global_data);
+				layer.on_push(&mut data);
 				vec![ layer ]
 			},
 
-			global_data,
+			data,
 			input_handler: InputHandler::new(),
 			running: true,
 
@@ -160,7 +166,7 @@ impl<'engine> Engine<'_> {
 		let layer_max = self.layer_stack.len() - 1;
 		let mut transition = Transition::None;
 		for (index, layer) in self.layer_stack.iter_mut().enumerate() {
-			transition = layer.update(&mut self.global_data, &mut self.audio, &mut self.graphics, &self.input_handler, index == layer_max);
+			transition = layer.update(&mut self.data, &mut self.audio, &mut self.graphics, &self.input_handler, index == layer_max);
 		}
 		match transition {
 			Transition::None => {}
@@ -204,12 +210,12 @@ impl<'engine> Engine<'_> {
 	}
 
 	pub fn pop_layer(&mut self) -> Box<dyn GameLayer> {
-		self.layer_stack.last_mut().unwrap().on_pop(&mut self.global_data);
+		self.layer_stack.last_mut().unwrap().on_pop(&mut self.data);
 		let stack_size = self.layer_stack.len();
 		if stack_size > 1 {
 			// If this is none then we are popping the last layer, in which case nothing gains focus
 			if let Some(layer_gaining_focus) = self.layer_stack.get_mut(stack_size - 2) {
-				layer_gaining_focus.on_gain_focus(&mut self.global_data);
+				layer_gaining_focus.on_gain_focus(&mut self.data);
 			}
 		} else {
 			// If there is nothing to gain focus then we can just quit the program
@@ -219,8 +225,8 @@ impl<'engine> Engine<'_> {
 	}
 
 	pub fn push_layer(&mut self, mut layer: Box<dyn GameLayer>) {
-		layer.on_push(&mut self.global_data);
-		self.layer_stack.last_mut().unwrap().on_lose_focus(&mut self.global_data);
+		layer.on_push(&mut self.data);
+		self.layer_stack.last_mut().unwrap().on_lose_focus(&mut self.data);
 		self.layer_stack.push(layer);
 	}
 }
