@@ -1,6 +1,8 @@
 [package]
 name = "current"
 version = "1.0.0"
+description = "A Rust game library built primarily off SDL2 with ease of use as its focus."
+license = "MIT License"
 authors = ["SalsaGal <fielddashos@gmail.com>"]
 edition = "2018"
 
