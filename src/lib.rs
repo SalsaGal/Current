@@ -274,7 +274,9 @@ impl<'engine> Engine<'_> {
 
 	pub fn push_layer(&mut self, mut layer: Box<dyn GameLayer>) {
 		layer.on_push(&mut self.data);
-		self.layer_stack.last_mut().unwrap().on_lose_focus(&mut self.data);
+		if let Some(layer) = self.layer_stack.last_mut() {
+			layer.on_lose_focus(&mut self.data);
+		}
 		self.layer_stack.push(layer);
 	}
 }
